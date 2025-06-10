@@ -1,8 +1,8 @@
 import { useMachine } from "@xstate/react";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { searchMachine } from "./searchMachine";
 
-export function SearchMachine() {
+export function SearchMachineComponent() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [state, send] = useMachine(searchMachine);
   const { loading, error, results, params } = state.context;
