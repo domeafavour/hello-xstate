@@ -6,6 +6,7 @@ specifiers:
   '@types/react-dom': ^19.1.2
   '@vitejs/plugin-react': ^4.4.1
   '@xstate/react': ^5.0.5
+  '@xstate/store': ^3.6.2
   eslint: ^9.25.0
   eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-react-refresh: ^0.4.19
@@ -19,6 +20,7 @@ specifiers:
 
 dependencies:
   '@xstate/react': 5.0.5_yvhg7u65ckerie34lhya4epjam
+  '@xstate/store': 3.6.2_react@19.1.0
   react: 19.1.0
   react-dom: 19.1.0_react@19.1.0
   xstate: 5.19.4
@@ -996,6 +998,20 @@ packages:
       xstate: 5.19.4
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /@xstate/store/3.6.2_react@19.1.0:
+    resolution: {integrity: sha512-jsaQC+zluanhqWr/Y3KGxfM4tTbfQCGRQ6AxF+hTAZ+YwVRExk7T2ovHzgok1D1w/r4lV/uUrn7zSt2k3vMyNA==}
+    peerDependencies:
+      react: ^18.2.0 || ^19.0.0
+      solid-js: ^1.7.6
+    peerDependenciesMeta:
+      react:
+        optional: true
+      solid-js:
+        optional: true
+    dependencies:
+      react: 19.1.0
     dev: false
 
   /acorn-jsx/5.3.2_acorn@8.15.0:
