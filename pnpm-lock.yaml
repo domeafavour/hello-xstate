@@ -5,6 +5,7 @@ specifiers:
   '@types/react': ^19.1.2
   '@types/react-dom': ^19.1.2
   '@vitejs/plugin-react': ^4.4.1
+  '@xstate/react': ^5.0.5
   eslint: ^9.25.0
   eslint-plugin-react-hooks: ^5.2.0
   eslint-plugin-react-refresh: ^0.4.19
@@ -17,6 +18,7 @@ specifiers:
   xstate: ^5.19.4
 
 dependencies:
+  '@xstate/react': 5.0.5_yvhg7u65ckerie34lhya4epjam
   react: 19.1.0
   react-dom: 19.1.0_react@19.1.0
   xstate: 5.19.4
@@ -820,7 +822,6 @@ packages:
     resolution: {integrity: sha512-BnsPLV43ddr05N71gaGzyZ5hzkCmGwhMvYc8zmvI8Ci1bRkkDSzDDVfAXfN2tk748OwI7ediiPX6PfT9p0QGVg==}
     dependencies:
       csstype: 3.1.3
-    dev: true
 
   /@typescript-eslint/eslint-plugin/8.34.0_cdvjfaiexgsblnql5qh7kfxrbi:
     resolution: {integrity: sha512-QXwAlHlbcAwNlEEMKQS2RCgJsgXrTJdjXT08xEgbPFa2yYQgVjBymxP5DrfrE7X7iodSzd9qBUHUycdyVJTW1w==}
@@ -980,6 +981,23 @@ packages:
       - supports-color
     dev: true
 
+  /@xstate/react/5.0.5_yvhg7u65ckerie34lhya4epjam:
+    resolution: {integrity: sha512-MfF/cPHa3lNKJmGFpUycMbNP25qBXyZXrxc8VYNroAu0Nnk0DV5WzAkTcQXma0xEC4dSwsoA+YQuKbZATtqvgg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      xstate: ^5.19.4
+    peerDependenciesMeta:
+      xstate:
+        optional: true
+    dependencies:
+      react: 19.1.0
+      use-isomorphic-layout-effect: 1.2.1_3y7tt4djiwyqqlve4dazz5ae6q
+      use-sync-external-store: 1.5.0_react@19.1.0
+      xstate: 5.19.4
+    transitivePeerDependencies:
+      - '@types/react'
+    dev: false
+
   /acorn-jsx/5.3.2_acorn@8.15.0:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1096,7 +1114,6 @@ packages:
 
   /csstype/3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
-    dev: true
 
   /debug/4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -1815,6 +1832,27 @@ packages:
     dependencies:
       punycode: 2.3.1
     dev: true
+
+  /use-isomorphic-layout-effect/1.2.1_3y7tt4djiwyqqlve4dazz5ae6q:
+    resolution: {integrity: sha512-tpZZ+EX0gaghDAiFR37hj5MgY6ZN55kLiPkJsKxBMZ6GZdOSPJXiOzPM984oPYZ5AnehYx5WQp1+ME8I/P/pRA==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 19.1.7
+      react: 19.1.0
+    dev: false
+
+  /use-sync-external-store/1.5.0_react@19.1.0:
+    resolution: {integrity: sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    dependencies:
+      react: 19.1.0
+    dev: false
 
   /vite/6.3.5:
     resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
