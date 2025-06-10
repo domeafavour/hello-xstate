@@ -1,5 +1,5 @@
-import { useSyncExternalStore } from "react";
-import { assign, createActor, setup } from "xstate";
+import { useMachine } from "@xstate/react";
+import { assign, setup } from "xstate";
 
 const countMachine = setup({
   types: {
@@ -23,32 +23,15 @@ const countMachine = setup({
   },
 });
 
-const countActor = createActor(countMachine);
-
-function subscribe(callback: () => void) {
-  const { unsubscribe } = countActor.subscribe(callback);
-  return () => unsubscribe();
-}
-
-function getSnapshot() {
-  return countActor.getSnapshot().context.count;
-}
-
-function increment() {
-  countActor.send({ type: "INCREMENT" });
-}
-
-countActor.start();
-
 function App() {
-  const count = useSyncExternalStore(subscribe, getSnapshot);
+  const [state, send] = useMachine(countMachine);
   return (
     <div>
-      <span>{count}</span>
+      <span>{state.context.count}</span>
       <button
         type="button"
         onClick={() => {
-          increment();
+          send({ type: "INCREMENT" });
         }}
       >
         +1
