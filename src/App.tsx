@@ -1,7 +1,7 @@
-import { SearchMachineComponent } from "./SearchMachineComponent";
+import { Tick } from "./Tick";
 
 function App() {
-  return <SearchMachineComponent />;
+  return <Tick />;
 }
 
 export default App;
