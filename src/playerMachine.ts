@@ -11,6 +11,7 @@ export const playerMachine = setup({
       walkingDirection?: WalkingDirection;
     },
     events: {} as
+      | { type: "JUMP" }
       | { type: "STOP_WALKING" }
       | { type: "START_WALKING"; direction?: WalkingDirection }
       | { type: "MOVE_RIGHT" }
@@ -66,26 +67,73 @@ export const playerMachine = setup({
     y: 0,
     walkingDirection: "right",
   },
-  initial: "stand",
+  // initial: "stand",
+  type: "parallel",
   states: {
-    stand: {
-      on: {
-        // START_WALKING: {
-        //   target: "walking",
-        // },
-      },
-    },
+    // stand: {
+    //   on: {
+    //     // START_WALKING: {
+    //     //   target: "walking",
+    //     // },
+    //   },
+    // },
     walking: {
-      invoke: {
-        src: "startWalking",
-        id: "walkingActor",
-        input: ({ context }) => ({
-          direction: context.walkingDirection ?? "right",
-        }),
+      initial: "inactive",
+      states: {
+        active: {
+          invoke: {
+            src: "startWalking",
+            id: "walkingActor",
+            input: ({ context }) => ({
+              direction: context.walkingDirection ?? "right",
+            }),
+          },
+          on: {
+            STOP_WALKING: { target: "inactive" },
+          },
+        },
+        inactive: {
+          on: {
+            START_WALKING: {
+              target: "active",
+              actions: {
+                type: "setWalking",
+                params: ({ event }) => event.direction,
+              },
+            },
+          },
+        },
       },
-      on: {
-        STOP_WALKING: {
-          target: "stand",
+      // invoke: {
+      //   src: "startWalking",
+      //   id: "walkingActor",
+      //   input: ({ context }) => ({
+      //     direction: context.walkingDirection ?? "right",
+      //   }),
+      // },
+      // on: {
+      //   STOP_WALKING: {
+      //     target: "stand",
+      //   },
+      // },
+    },
+    jumping: {
+      initial: "inactive",
+      states: {
+        active: {
+          entry: assign({
+            y: () => 40,
+          }),
+          after: {
+            400: {
+              target: "inactive",
+            },
+          },
+        },
+        inactive: {
+          on: {
+            JUMP: { target: "active" },
+          },
         },
       },
     },
@@ -102,6 +150,9 @@ export const playerMachine = setup({
     MOVE_LEFT: {
       description: "move by -5",
       actions: { type: "moveLeft" },
+    },
+    JUMP: {
+      target: ".jumping.active",
     },
   },
 });
