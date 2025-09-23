@@ -67,7 +67,6 @@ export const playerMachine = setup({
       { type: "SET_Y"; value: number } | { type: "JUMP_END" },
       { y: number }
     >(({ sendBack, input }) => {
-      
       let value = 0;
 
       const cleanup = frame((stop) => {
@@ -129,6 +128,14 @@ export const playerMachine = setup({
           },
           on: {
             STOP_WALKING: { target: "inactive" },
+            MOVE_RIGHT: {
+              description: "move by 5",
+              actions: { type: "moveRight" },
+            },
+            MOVE_LEFT: {
+              description: "move by -5",
+              actions: { type: "moveLeft" },
+            },
           },
         },
         inactive: {
@@ -191,13 +198,5 @@ export const playerMachine = setup({
     //   target: '.walking',
     //   actions: { type: 'setWalking', params: ({ event }) => event.direction },
     // },
-    MOVE_RIGHT: {
-      description: "move by 5",
-      actions: { type: "moveRight" },
-    },
-    MOVE_LEFT: {
-      description: "move by -5",
-      actions: { type: "moveLeft" },
-    },
   },
 });
