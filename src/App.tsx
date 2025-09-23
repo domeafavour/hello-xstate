@@ -1,7 +1,7 @@
-import { Tick } from "./Tick";
+import { Player } from "./Player";
 
 function App() {
-  return <Tick />;
+  return <Player />;
 }
 
 export default App;
