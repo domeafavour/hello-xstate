@@ -1,6 +1,10 @@
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";
+import { Person } from "./Person";
 import { playerMachine } from "./playerMachine";
+
+const SCENE_WIDTH = 600;
+const ACTOR_WIDTH = 64;
 
 export function Player() {
   const [state, send] = useMachine(playerMachine);
@@ -33,7 +37,25 @@ export function Player() {
       <p>
         Current State: <strong>{state.value}</strong>
       </p>
-      <div>{JSON.stringify(state.context)}</div>
+      <div
+        style={{
+          borderBottom: "2px solid red",
+          position: "relative",
+          width: SCENE_WIDTH,
+        }}
+      >
+        <div
+          style={{
+            width: ACTOR_WIDTH,
+            transition: "transform 0.2s linear",
+            transform: `translate(${
+              (SCENE_WIDTH - ACTOR_WIDTH) * (state.context.x / 100)
+            }px, 0px)`,
+          }}
+        >
+          <Person walking={state.matches("walking")} />
+        </div>
+      </div>
       <div style={{ display: "flex", flexDirection: "row", gap: 8 }}>
         <button
           onMouseDown={() => send({ type: "START_WALKING", direction: "left" })}
