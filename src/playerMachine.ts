@@ -1,4 +1,5 @@
 import { assign, fromCallback, setup } from "xstate";
+import { frame } from "./utils/frame";
 
 type WalkingDirection = "left" | "right";
 
@@ -12,6 +13,9 @@ export const playerMachine = setup({
     },
     events: {} as
       | { type: "JUMP" }
+      | { type: "FALL" }
+      | { type: "JUMP_END" }
+      | { type: "SET_Y"; value: number }
       | { type: "STOP_WALKING" }
       | { type: "START_WALKING"; direction?: WalkingDirection }
       | { type: "MOVE_RIGHT" }
@@ -24,19 +28,11 @@ export const playerMachine = setup({
     >(({ sendBack, receive, input }) => {
       const { direction } = input;
 
-      let timeoutId: ReturnType<typeof setTimeout>;
-
-      function _run() {
+      const cleanup = frame(() => {
         sendBack({
           type: direction === "right" ? "MOVE_RIGHT" : "MOVE_LEFT",
         });
-        timeoutId = setTimeout(_run, 200);
-      }
-      _run();
-
-      function cleanup() {
-        clearTimeout(timeoutId);
-      }
+      }, 16);
 
       receive((e) => {
         if (e.type === "STOP_WALKING") {
@@ -46,20 +42,63 @@ export const playerMachine = setup({
 
       return cleanup;
     }),
+
+    jumpUp: fromCallback<
+      { type: "FALL" } | { type: "SET_Y"; value: number },
+      { y: number }
+    >(({ sendBack, input }) => {
+      let value = 0;
+
+      const cleanup = frame((stop) => {
+        const next = input.y + (value += 2);
+
+        if (next > 40) {
+          sendBack({ type: "FALL" });
+          stop();
+        } else {
+          sendBack({ type: "SET_Y", value: next });
+        }
+      }, 16);
+
+      return cleanup;
+    }),
+
+    jumpDown: fromCallback<
+      { type: "SET_Y"; value: number } | { type: "JUMP_END" },
+      { y: number }
+    >(({ sendBack, input }) => {
+      
+      let value = 0;
+
+      const cleanup = frame((stop) => {
+        const next = input.y - (value += 2);
+
+        if (next < 0) {
+          sendBack({ type: "SET_Y", value: 0 });
+          sendBack({ type: "JUMP_END" });
+          stop();
+        } else {
+          sendBack({ type: "SET_Y", value: next });
+        }
+      }, 16);
+
+      return cleanup;
+    }),
   },
   actions: {
-    moveLeft: assign({ x: ({ context }) => Math.max(context.x - 5, 0) }),
-    moveRight: assign({ x: ({ context }) => Math.min(context.x + 5, 100) }),
+    moveLeft: assign({ x: ({ context }) => Math.max(context.x - 0.5, 0) }),
+    moveRight: assign({ x: ({ context }) => Math.min(context.x + 0.5, 100) }),
     setWalking: assign({
       walkingDirection: (_, params?: "left" | "right") => params || "right",
     }),
+    setY: assign({ y: (_, value: number) => value }),
   },
   guards: {
     // canMoveLeft: ({ context }) => context.x > 0,
     // canMoveRight: ({ context }) => context.x < 100,
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QAcA2BDAnmATgOlgBd0A7CAYgFkB5ANQFEB9AGXoDEAVAbQAYBdRCgD2sAJaFRQkoJAAPRABYAbHgCcADnUAmdQEYtAVgA0ITIl0B2C2oMBmXQp6H1F9ap5KAvp5NosuAmIyKjomACUASQBxAAlufhlkEXFJaSQ5RS0TMwQ9PANvHxASIQg4RIxsHETkiSkZeQQAWiVsxBbvX0qAolIIGrE6tNBGiy08WyULXRdjU0QtC1U8RyUdHgNLA1ddQs8gA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QAcA2BDAnmATgYgFkB5ANQFEB9AJQEkBxACQBUBtABgF1EUB7WASwAu-HgDtuIAB6IAzACYArADoAbIoA0ITIgCMMgJxL9CmTsUBfc5rRZchUpQAyZAGKtOE5HyEjxSKbIybKp6cgAcZgqa2ghmltYY2DhKAO7oqADW-KJQSugAxsIAbmB4AMpMRAAKFADqAIKOANI0AHJ07Fz+XgLCYhLSCHJswQDsACxyOmGjUVqI4zo6RmxqCvEgNkmp6Vk5StkFxaUV9VRMdY0t7Z2e3n1+oIM6+jJKw6Ya8wjjakrjqwsVk2iVwSgAVgBXAC2yGyuUOhX4JTwACkAKoEKq3br3XwDXRhOTvML6QFzGJElRKMJsUZyfQ6FTMlkqDZbMFQ2HwpRQHjw9HIcpkC4ATRxvF6+P8g3k4yU01m0UQox0o3+Mlm7NByS5cP2fIFQpcjUcEs2eP6MoWKnVbDkMnGmopiDCixpZLWlmBoh4EDgnh1dylVqeiAAtHJ5YyAWtlUMZNTPUCErZkmlMvDgz5QwEhvp43L-uTtWmdpn9kdkWBsw8CQgZBElI7nfHxuMwkZmTpxgowjIB4PRqXthm9gjRFWSrXpWGEKNRm2F0pRvp9ONV0zWcPgRzdTD9VAZ7nBg6lGwwgpXkrvmpDNf1rudRCDzzEcdj4886rz5eH-GiXVIJ6UZVkWRHTlXwNfkckFT963CdVjE+F0EAiTtSRLJ8yz1HlDRyAARHgUi-Hocy-QYFBUZRwkiADpg9LDLCAA */
   id: "player",
   context: {
     lp: 100,
@@ -104,45 +143,54 @@ export const playerMachine = setup({
           },
         },
       },
-      // invoke: {
-      //   src: "startWalking",
-      //   id: "walkingActor",
-      //   input: ({ context }) => ({
-      //     direction: context.walkingDirection ?? "right",
-      //   }),
-      // },
-      // on: {
-      //   STOP_WALKING: {
-      //     target: "stand",
-      //   },
-      // },
     },
     jumping: {
       initial: "inactive",
       states: {
-        active: {
-          entry: assign({
-            y: () => 40,
-          }),
-          after: {
-            400: {
-              target: "inactive",
+        inactive: {
+          on: {
+            JUMP: { target: "goingUp" },
+          },
+        },
+        goingUp: {
+          invoke: {
+            src: "jumpUp",
+            input: ({ context }) => ({ y: context.y }),
+          },
+          on: {
+            FALL: {
+              // actions: assign({
+              //   y: 0,
+              // }),
+              target: "goingDown",
             },
           },
         },
-        inactive: {
-          on: {
-            JUMP: { target: "active" },
+        goingDown: {
+          // entry: [assign({ y: 0 })],
+          invoke: {
+            src: "jumpDown",
+            input: ({ context }) => ({ y: context.y }),
           },
+          on: {
+            JUMP_END: { target: "inactive" },
+          },
+        },
+      },
+      on: {
+        SET_Y: {
+          actions: assign({
+            y: ({ event }) => event.value,
+          }),
         },
       },
     },
   },
   on: {
-    START_WALKING: {
-      target: ".walking",
-      actions: { type: "setWalking", params: ({ event }) => event.direction },
-    },
+    // START_WALKING: {
+    //   target: '.walking',
+    //   actions: { type: 'setWalking', params: ({ event }) => event.direction },
+    // },
     MOVE_RIGHT: {
       description: "move by 5",
       actions: { type: "moveRight" },
@@ -150,9 +198,6 @@ export const playerMachine = setup({
     MOVE_LEFT: {
       description: "move by -5",
       actions: { type: "moveLeft" },
-    },
-    JUMP: {
-      target: ".jumping.active",
     },
   },
 });

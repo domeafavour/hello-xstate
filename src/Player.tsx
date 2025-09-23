@@ -17,6 +17,8 @@ export function Player() {
         send({ type: "START_WALKING", direction: "left" });
       } else if (e.key === "ArrowRight") {
         send({ type: "START_WALKING", direction: "right" });
+      } else if (e.key === " ") {
+        send({ type: "JUMP" });
       }
     }
     function handleKeyUp(e: KeyboardEvent) {
@@ -47,13 +49,13 @@ export function Player() {
         <div
           style={{
             width: ACTOR_WIDTH,
-            transition: "transform 0.2s linear",
+            // transition: "transform 0.2s linear",
             transform: `translate(${
               (SCENE_WIDTH - ACTOR_WIDTH) * (state.context.x / 100)
             }px, ${-state.context.y}px)`,
           }}
         >
-          <Person walking={state.matches("walking")} />
+          <Person walking={state.matches({ walking: "active" })} />
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "row", gap: 8 }}>
