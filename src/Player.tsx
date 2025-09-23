@@ -35,7 +35,7 @@ export function Player() {
   return (
     <div>
       <p>
-        Current State: <strong>{state.value}</strong>
+        Current State: <strong>{JSON.stringify(state.value)}</strong>
       </p>
       <div
         style={{
@@ -50,7 +50,7 @@ export function Player() {
             transition: "transform 0.2s linear",
             transform: `translate(${
               (SCENE_WIDTH - ACTOR_WIDTH) * (state.context.x / 100)
-            }px, 0px)`,
+            }px, ${-state.context.y}px)`,
           }}
         >
           <Person walking={state.matches("walking")} />
