@@ -4,7 +4,7 @@ import { type WalkingDirection } from "./walkMachine";
 
 export const monsterMachine = setup({
   types: {
-    tags: "" as "attacking_one" | "attaching_two",
+    tags: "" as "attacking_one" | "attacking_two",
     context: {
       lp: 100,
       x: 0,
@@ -171,7 +171,7 @@ export const monsterMachine = setup({
               },
             },
             two: {
-              tags: ["attaching_two"],
+              tags: ["attacking_two"],
               after: {
                 1000: { target: "ready" },
               },

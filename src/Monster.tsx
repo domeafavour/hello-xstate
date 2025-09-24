@@ -59,7 +59,7 @@ export function Monster() {
     <MachineCard state={state}>
       <div>
         {state.tags.has("attacking_one") ? "ONE" : null}
-        {state.tags.has("attaching_two") ? "TWO" : null}
+        {state.tags.has("attacking_two") ? "TWO" : null}
       </div>
     </MachineCard>
   );
